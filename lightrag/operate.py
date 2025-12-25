@@ -663,15 +663,15 @@ async def kg_query(
 
     
 
-    log_path = f"./data/eval5/topk6_old/time_query_context_topk{query_param.top_k}.log"
-    elapsed_time = round(time.time() - start_time, 3)
-    with open(log_path, "a", encoding="utf-8") as log_f:
-        log_f.write(f"{1}\t{elapsed_time}\t{query}\n")
+    # log_path = f"./data/eval5/topk6_new/time_query_context_topk{query_param.top_k}.log"
+    # elapsed_time = round(time.time() - start_time, 3)
+    # with open(log_path, "a", encoding="utf-8") as log_f:
+    #     log_f.write(f"{1}\t{elapsed_time}\t{query}\n")
 
 
-    log_path = f"./data/eval5/topk6_old/number_token_context_topk{query_param.top_k}.log"
-    with open(log_path, "a", encoding="utf-8") as log_f:
-        log_f.write(f"{1}\t{count_token_of_text(context)}\t{query}\n")
+    # log_path = f"./data/eval5/topk6_new/number_token_context_topk{query_param.top_k}.log"
+    # with open(log_path, "a", encoding="utf-8") as log_f:
+    #     log_f.write(f"{1}\t{count_token_of_text(context)}\t{query}\n")
 
 
 
@@ -1079,8 +1079,9 @@ async def _build_query_context(
     query_param: QueryParam,
 ):
     if query_param.mode == "local":
-        entities_context, relations_context, text_units_context = await _get_node_data(
+        entities_context, relations_context, text_units_context = await _get_node_data_new(
             ll_keywords,
+            hl_keywords,
             knowledge_graph_inst,
             entities_vdb,
             text_chunks_db,
@@ -1095,9 +1096,9 @@ async def _build_query_context(
             query_param,
         )
     else:  # hybrid mode
-        entities_context, relations_context, text_units_context = await _get_node_data(
+        entities_context, relations_context, text_units_context = await _get_node_data_new(
             ll_keywords,
-            # hl_keywords,
+            hl_keywords,
             knowledge_graph_inst,
             entities_vdb,
             # relationships_vdb,
@@ -1150,6 +1151,10 @@ async def _build_query_context(
     -----Relationships-----
     ```csv
     {relations_context}
+    ```
+    -----Document Chunks-----
+    ```csv
+    {text_units_context}
     ```
     """.strip().replace("UNKNOWN", "")
     return result
@@ -1544,7 +1549,7 @@ async def _find_most_related_edges_from_entities_new(
     # Lọc lại chỉ giữ các cạnh có từ khóa khớp với bất kỳ hl_keyword nào
     hl_keywords_lower = [kw.strip().lower() for kw in hl_keywords.split(",")]
     logging.info(f"\nhl_keywords: {hl_keywords}")
-    logging.info(f"\nall_edges_data: {all_edges_data}")
+    # logging.info(f"\nall_edges_data: {all_edges_data}")
 
     filtered_edges = [
         edge for edge in all_edges_data

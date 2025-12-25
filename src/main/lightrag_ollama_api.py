@@ -27,7 +27,7 @@ TOP_K = int(os.getenv("TOP_K", 5))
 LOG_FILE_MODE = os.getenv("LOG_FILE_MODE", "a")
 
 
-LOG_FILE = "./logs/api_logs.log"
+LOG_FILE = "../../logs/api_logs.log"
 
 logging.basicConfig(
     filename=LOG_FILE,
@@ -54,7 +54,7 @@ app.add_middleware(
     allow_headers=["*"],  # Allow all headers
 )
 
-WORKING_DIR = "./dickens_ollama"
+WORKING_DIR = "../../dickens_ollama"
 logging.basicConfig(format="%(levelname)s:%(message)s", level=logging.INFO)
 
 if not os.path.exists(WORKING_DIR):
